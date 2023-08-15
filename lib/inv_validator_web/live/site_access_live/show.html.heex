@@ -1,0 +1,26 @@
+<.header>
+  Site access <%= @site_access.id %>
+  <:subtitle>This is a site_access record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/access/#{@site_access}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit site_access</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Site"><%= @site_access.site_id %></:item>
+</.list>
+
+<.back navigate={~p"/access"}>Back to user_site_access</.back>
+
+<.modal :if={@live_action == :edit} id="site_access-modal" show on_cancel={JS.patch(~p"/access/#{@site_access}")}>
+  <.live_component
+    module={InvValidatorWeb.SiteAccessLive.FormComponent}
+    id={@site_access.id}
+    title={@page_title}
+    action={@live_action}
+    site_access={@site_access}
+    patch={~p"/access/#{@site_access}"}
+  />
+</.modal>

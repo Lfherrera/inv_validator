@@ -1,0 +1,41 @@
+<.header>
+  Listing User site access
+  <:actions>
+    <.link patch={~p"/access/new"}>
+      <.button>New Site access</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="user_site_access"
+  rows={@streams.user_site_access}
+  row_click={fn {_id, site_access} -> JS.navigate(~p"/access/#{site_access}") end}
+>
+  <:col :let={{_id, site_access}} label="Site"><%= site_access.site_id %></:col>
+  <:action :let={{_id, site_access}}>
+    <div class="sr-only">
+      <.link navigate={~p"/access/#{site_access}"}>Show</.link>
+    </div>
+    <.link patch={~p"/access/#{site_access}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, site_access}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: site_access.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="site_access-modal" show on_cancel={JS.patch(~p"/access")}>
+  <.live_component
+    module={InvValidatorWeb.SiteAccessLive.FormComponent}
+    id={@site_access.id || :new}
+    title={@page_title}
+    action={@live_action}
+    site_access={@site_access}
+    patch={~p"/access"}
+  />
+</.modal>

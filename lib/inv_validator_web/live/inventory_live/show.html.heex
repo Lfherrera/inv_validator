@@ -1,0 +1,29 @@
+<.header>
+  Inventory <%= @inventory.id %>
+  <:subtitle>This is a inventory record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/inventory/#{@inventory}/show/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit inventory</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Date"><%= @inventory.date %></:item>
+  <:item title="Segment"><%= @inventory.segment_id %></:item>
+  <:item title="Site"><%= @inventory.site_id %></:item>
+  <:item title="Room"><%= @inventory.room_id %></:item>
+</.list>
+
+<.back navigate={~p"/inventory"}>Back to inventory</.back>
+
+<.modal :if={@live_action == :edit} id="inventory-modal" show on_cancel={JS.patch(~p"/inventory/#{@inventory}")}>
+  <.live_component
+    module={InvValidatorWeb.InventoryLive.FormComponent}
+    id={@inventory.id}
+    title={@page_title}
+    action={@live_action}
+    inventory={@inventory}
+    patch={~p"/inventory/#{@inventory}"}
+  />
+</.modal>

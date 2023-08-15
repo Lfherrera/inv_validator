@@ -1,0 +1,44 @@
+<.header>
+  Listing Inventory
+  <:actions>
+    <.link patch={~p"/inventory/new"}>
+      <.button>New Inventory</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="inventory"
+  rows={@streams.inventory_collection}
+  row_click={fn {_id, inventory} -> JS.navigate(~p"/inventory/#{inventory}") end}
+>
+  <:col :let={{_id, inventory}} label="Date"><%= inventory.date %></:col>
+  <:col :let={{_id, inventory}} label="Segment"><%= inventory.segment_id %></:col>
+  <:col :let={{_id, inventory}} label="Site"><%= inventory.site_id %></:col>
+  <:col :let={{_id, inventory}} label="Room"><%= inventory.room_id %></:col>
+  <:action :let={{_id, inventory}}>
+    <div class="sr-only">
+      <.link navigate={~p"/inventory/#{inventory}"}>Show</.link>
+    </div>
+    <.link patch={~p"/inventory/#{inventory}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, inventory}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: inventory.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="inventory-modal" show on_cancel={JS.patch(~p"/inventory")}>
+  <.live_component
+    module={InvValidatorWeb.InventoryLive.FormComponent}
+    id={@inventory.id || :new}
+    title={@page_title}
+    action={@live_action}
+    inventory={@inventory}
+    patch={~p"/inventory"}
+  />
+</.modal>
