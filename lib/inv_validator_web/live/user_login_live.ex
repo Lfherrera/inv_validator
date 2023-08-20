@@ -37,6 +37,7 @@ defmodule InvValidatorWeb.UserLoginLive do
 
   def mount(_params, _session, socket) do
     email = live_flash(socket.assigns.flash, :email)
+    IO.inspect(email, label: "***** EMAIL.")
     form = to_form(%{"email" => email}, as: "user")
     {:ok, assign(socket, form: form), temporary_assigns: [form: form]}
   end

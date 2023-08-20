@@ -1,11 +1,13 @@
 defmodule InvValidator.UserSiteAccess.SiteAccess do
   use Ecto.Schema
   import Ecto.Changeset
+  alias InvValidator.Users.User
 
   schema "user_site_access" do
     field :site_id, :integer
     field :user_id, :id
 
+    belongs_to :users, User
     timestamps()
   end
 
