@@ -6,7 +6,6 @@ defmodule InvValidatorWeb.SiteAccessLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    IO.inspect(socket)
     {:ok, stream(socket, :user_site_access, UserSiteAccess.list_user_site_access())}
   end
 
