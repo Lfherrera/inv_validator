@@ -5,8 +5,9 @@ defmodule InvValidator.Validator.Inventory do
   schema "inventory" do
     field :date, :date
     field :segment_id, :integer
-    field :site_id, :integer
     field :room_id, :integer
+
+    belongs_to :site, Site, references: :site_id
 
     timestamps()
   end
