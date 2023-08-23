@@ -7,3 +7,4 @@ alias InvValidator.Validator.Inventory
 alias InvValidator.UserSiteAccess.SiteAccess
 alias InvValidator.Validator.Site
 alias InvValidator.Sites
+alias InvValidator.Validator

@@ -14,7 +14,7 @@
 >
   <:col :let={{_id, inventory}} label="Date"><%= inventory.date %></:col>
   <:col :let={{_id, inventory}} label="Segment"><%= inventory.segment_id %></:col>
-  <:col :let={{_id, inventory}} label="Site"><%= inventory.site_id %></:col>
+  <:col :let={{_id, inventory}} label="Site"><%= inventory.site.name %></:col>
   <:col :let={{_id, inventory}} label="Room"><%= inventory.room_id %></:col>
   <:action :let={{_id, inventory}}>
     <div class="sr-only">
@@ -39,6 +39,7 @@
     title={@page_title}
     action={@live_action}
     inventory={@inventory}
+    all_sites={@all_sites}
     patch={~p"/inventory"}
   />
 </.modal>

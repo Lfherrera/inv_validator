@@ -3,9 +3,11 @@ defmodule InvValidatorWeb.InventoryLive.Index do
 
   alias InvValidator.Validator
   alias InvValidator.Validator.Inventory
+  alias InvValidator.Sites
 
   @impl true
   def mount(_params, _session, socket) do
+    socket =  assign(socket,:all_sites, all_sites())
     {:ok, stream(socket, :inventory_collection, Validator.list_inventory())}
   end
 
@@ -18,18 +20,26 @@ defmodule InvValidatorWeb.InventoryLive.Index do
     socket
     |> assign(:page_title, "Edit Inventory")
     |> assign(:inventory, Validator.get_inventory!(id))
+    |> assign(:all_sites, all_sites())
   end
 
   defp apply_action(socket, :new, _params) do
     socket
     |> assign(:page_title, "New Inventory")
     |> assign(:inventory, %Inventory{})
+    |> assign(:all_sites, all_sites())
   end
 
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Listing Inventory")
     |> assign(:inventory, nil)
+    |> assign(:all_sites, all_sites())
+  end
+
+  defp all_sites do
+      Sites.list_sites()
+      |> Enum.map(fn site -> {site.name, site.site_id} end)
   end
 
   @impl true
