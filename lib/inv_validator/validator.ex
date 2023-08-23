@@ -18,10 +18,14 @@ defmodule InvValidator.Validator do
 
   """
   def list_inventory do
-    Repo.all(Inventory)
+    Repo.all(from i in Inventory, preload: :site)
   end
 
   @doc """
+
+  comments_query = from c in Comment, order_by: c.published_at
+  Repo.all from p in Post, preload: [comments: ^comments_query]
+
   Gets a single inventory.
 
   Raises `Ecto.NoResultsError` if the Inventory does not exist.
@@ -35,7 +39,7 @@ defmodule InvValidator.Validator do
       ** (Ecto.NoResultsError)
 
   """
-  def get_inventory!(id), do: Repo.get!(Inventory, id)
+  def get_inventory!(id), do: Repo.get!(from( i in Inventory, preload: :site), id)
 
   @doc """
   Creates a inventory.
@@ -50,9 +54,13 @@ defmodule InvValidator.Validator do
 
   """
   def create_inventory(attrs \\ %{}) do
-    %Inventory{}
+     %Inventory{}
     |> Inventory.changeset(attrs)
     |> Repo.insert()
+    |> case do
+      {:ok, inventory} -> {:ok, Repo.preload(inventory, :site) }
+      other -> other
+    end
   end
 
   @doc """

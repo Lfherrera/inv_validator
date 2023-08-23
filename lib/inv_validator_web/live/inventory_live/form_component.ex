@@ -21,14 +21,17 @@ defmodule InvValidatorWeb.InventoryLive.FormComponent do
       >
         <.input field={@form[:date]} type="date" label="Date" />
         <.input field={@form[:segment_id]} type="number" label="Segment" />
-        <.input field={@form[:site_id]} type="number" label="Site" />
+        <.input :if={assigns.action in [:new, :edit]} options={@all_sites} value={@form[:site_id].value} prompt="Select Site" name="selected_site"  type="select" label="Site" />
+        <.input field={@form[:site_id]} type="hidden" />
         <.input field={@form[:room_id]} type="number" label="Room" />
+
         <:actions>
           <.button phx-disable-with="Saving...">Save Inventory</.button>
         </:actions>
       </.simple_form>
     </div>
     """
+
   end
 
   @impl true
@@ -42,19 +45,27 @@ defmodule InvValidatorWeb.InventoryLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"inventory" => inventory_params}, socket) do
+  def handle_event("validate", %{"inventory" => inventory_params} = params, socket) do
     changeset =
       socket.assigns.inventory
-      |> Validator.change_inventory(inventory_params)
+      |> Validator.change_inventory(append_site_id(inventory_params, params["selected_site"]))
       |> Map.put(:action, :validate)
 
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event("save", %{"inventory" => inventory_params}, socket) do
-    save_inventory(socket, socket.assigns.action, inventory_params)
+  def handle_event("save", %{"inventory" => inventory_params, "selected_site" => selected_site_id}, socket) do
+    save_inventory(socket, socket.assigns.action, append_site_id(inventory_params, selected_site_id))
   end
 
+  defp append_site_id(inventory_params, selected_site_id) do
+    if selected_site_id == "" || selected_site_id == nil do
+      inventory_params
+    else
+      %{inventory_params | "site_id" => selected_site_id}
+    end
+
+  end
   defp save_inventory(socket, :edit, inventory_params) do
     case Validator.update_inventory(socket.assigns.inventory, inventory_params) do
       {:ok, inventory} ->

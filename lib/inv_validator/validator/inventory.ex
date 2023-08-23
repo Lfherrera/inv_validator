@@ -1,6 +1,7 @@
 defmodule InvValidator.Validator.Inventory do
   use Ecto.Schema
   import Ecto.Changeset
+  alias InvValidator.Validator.Site
 
   schema "inventory" do
     field :date, :date

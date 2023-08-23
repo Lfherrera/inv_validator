@@ -5,7 +5,6 @@ defmodule InvValidator.Sites do
 
   import Ecto.Query, warn: false
   alias InvValidator.Repo
-
   alias InvValidator.Validator.Site
 
   def list_sites do
