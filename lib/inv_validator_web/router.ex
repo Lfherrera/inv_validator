@@ -27,11 +27,7 @@ defmodule InvValidatorWeb.Router do
     pipe_through [:browser, :require_authenticated_user]
 
     live "/access", SiteAccessLive.Index, :index
-    live "/access/new", SiteAccessLive.Index, :new
-    live "/access/:id/edit", SiteAccessLive.Index, :edit
-
-    live "/access/:id", SiteAccessLive.Show, :show
-    live "/access/:id/show/edit", SiteAccessLive.Show, :edit
+    live "/access/:user_id/new", SiteAccessLive.Index, :new
   end
 
   scope "/", InvValidatorWeb do
@@ -44,6 +40,7 @@ defmodule InvValidatorWeb.Router do
     live "/inventory/:id", InventoryLive.Show, :show
     live "/inventory/:id/show/edit", InventoryLive.Show, :edit
   end
+
   # Other scopes may use custom stacks.
   # scope "/api", InvValidatorWeb do
   #   pipe_through :api

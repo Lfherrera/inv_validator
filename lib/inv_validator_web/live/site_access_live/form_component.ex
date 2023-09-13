@@ -12,14 +12,17 @@ defmodule InvValidatorWeb.SiteAccessLive.FormComponent do
         <:subtitle>Use this form to manage site_access records in your database.</:subtitle>
       </.header>
 
-      <.simple_form
-        for={@form}
-        id="site_access-form"
-        phx-target={@myself}
-        phx-change="validate"
-        phx-submit="save"
-      >
-        <.input field={@form[:site_id]} type="number" label="Site" />
+      <.simple_form for={@form} id="site_access-form" phx-target={@myself} phx-submit="save">
+        <%= for {site_name, site_id} <- @available_sites do %>
+          <.input
+            :if={assigns.action in [:new]}
+            value={site_id}
+            prompt="Select Site"
+            name={site_id}
+            type="checkbox"
+            label={site_name}
+          />
+        <% end %>
         <:actions>
           <.button phx-disable-with="Saving...">Save Site access</.button>
         </:actions>
@@ -39,45 +42,30 @@ defmodule InvValidatorWeb.SiteAccessLive.FormComponent do
   end
 
   @impl true
-  def handle_event("validate", %{"site_access" => site_access_params}, socket) do
-    changeset =
-      socket.assigns.site_access
-      |> UserSiteAccess.change_site_access(site_access_params)
-      |> Map.put(:action, :validate)
 
-    {:noreply, assign_form(socket, changeset)}
-  end
+  def handle_event("save", params, socket) do
+    user_id = socket.assigns.user_id
 
-  def handle_event("save", %{"site_access" => site_access_params}, socket) do
-    save_site_access(socket, socket.assigns.action, site_access_params)
-  end
+    result =
+      params
+      |> Enum.filter(fn {_site_id, selected} ->
+        selected == "true"
+      end)
+      |> Enum.map(fn {site_id, _seleted} ->
+        site_id = String.to_integer(site_id)
+        UserSiteAccess.create_site_access(%{site_id: site_id, user_id: user_id})
+      end)
 
-  defp save_site_access(socket, :edit, site_access_params) do
-    case UserSiteAccess.update_site_access(socket.assigns.site_access, site_access_params) do
-      {:ok, site_access} ->
-        notify_parent({:saved, site_access})
-
-        {:noreply,
-         socket
-         |> put_flash(:info, "Site access updated successfully")
-         |> push_patch(to: socket.assigns.patch)}
-
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign_form(socket, changeset)}
-    end
-  end
-
-  defp save_site_access(socket, :new, site_access_params) do
-    case UserSiteAccess.create_site_access(site_access_params) do
-      {:ok, site_access} ->
-        notify_parent({:saved, site_access})
+    case result |> Enum.filter(fn {error, _} -> error == :error end) do
+      [] ->
+        notify_parent({:saved, %{}})
 
         {:noreply,
          socket
          |> put_flash(:info, "Site access created successfully")
          |> push_patch(to: socket.assigns.patch)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
+      [{:error, %Ecto.Changeset{} = changeset} | _] ->
         {:noreply, assign_form(socket, changeset)}
     end
   end

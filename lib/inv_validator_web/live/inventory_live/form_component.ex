@@ -21,7 +21,15 @@ defmodule InvValidatorWeb.InventoryLive.FormComponent do
       >
         <.input field={@form[:date]} type="date" label="Date" />
         <.input field={@form[:segment_id]} type="number" label="Segment" />
-        <.input :if={assigns.action in [:new, :edit]} options={@all_sites} value={@form[:site_id].value} prompt="Select Site" name="selected_site"  type="select" label="Site" />
+        <.input
+          :if={assigns.action in [:new, :edit]}
+          options={@all_sites}
+          value={@form[:site_id].value}
+          prompt="Select Site"
+          name="selected_site"
+          type="select"
+          label="Site"
+        />
         <.input field={@form[:site_id]} type="hidden" />
         <.input field={@form[:room_id]} type="number" label="Room" />
 
@@ -31,7 +39,6 @@ defmodule InvValidatorWeb.InventoryLive.FormComponent do
       </.simple_form>
     </div>
     """
-
   end
 
   @impl true
@@ -54,8 +61,16 @@ defmodule InvValidatorWeb.InventoryLive.FormComponent do
     {:noreply, assign_form(socket, changeset)}
   end
 
-  def handle_event("save", %{"inventory" => inventory_params, "selected_site" => selected_site_id}, socket) do
-    save_inventory(socket, socket.assigns.action, append_site_id(inventory_params, selected_site_id))
+  def handle_event(
+        "save",
+        %{"inventory" => inventory_params, "selected_site" => selected_site_id},
+        socket
+      ) do
+    save_inventory(
+      socket,
+      socket.assigns.action,
+      append_site_id(inventory_params, selected_site_id)
+    )
   end
 
   defp append_site_id(inventory_params, selected_site_id) do
@@ -64,8 +79,8 @@ defmodule InvValidatorWeb.InventoryLive.FormComponent do
     else
       %{inventory_params | "site_id" => selected_site_id}
     end
-
   end
+
   defp save_inventory(socket, :edit, inventory_params) do
     case Validator.update_inventory(socket.assigns.inventory, inventory_params) do
       {:ok, inventory} ->

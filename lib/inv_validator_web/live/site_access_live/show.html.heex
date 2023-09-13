@@ -14,7 +14,12 @@
 
 <.back navigate={~p"/access"}>Back to user_site_access</.back>
 
-<.modal :if={@live_action == :edit} id="site_access-modal" show on_cancel={JS.patch(~p"/access/#{@site_access}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="site_access-modal"
+  show
+  on_cancel={JS.patch(~p"/access/#{@site_access}")}
+>
   <.live_component
     module={InvValidatorWeb.SiteAccessLive.FormComponent}
     id={@site_access.id}

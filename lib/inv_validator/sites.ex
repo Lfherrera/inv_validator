@@ -11,10 +11,7 @@ defmodule InvValidator.Sites do
     Repo.all(Site)
   end
 
-
   def get_site!(id), do: Repo.get!(Site, id)
-
-
 
   def create_site(attrs \\ %{}) do
     %Site{}
@@ -28,11 +25,9 @@ defmodule InvValidator.Sites do
     |> Repo.update()
   end
 
-
   def delete_site(%Site{} = site) do
     Repo.delete(site)
   end
-
 
   def change_site(%Site{} = site, attrs \\ %{}) do
     Site.changeset(site, attrs)

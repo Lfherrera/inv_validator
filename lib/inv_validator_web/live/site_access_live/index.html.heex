@@ -1,41 +1,46 @@
 <.header>
   Listing User site access
-  <:actions>
-    <.link patch={~p"/access/new"}>
-      <.button>New Site access</.button>
-    </.link>
-  </:actions>
 </.header>
 
-<.table
-  id="user_site_access"
-  rows={@streams.user_site_access}
-  row_click={fn {_id, site_access} -> JS.navigate(~p"/access/#{site_access}") end}
->
-  <:col :let={{_id, site_access}} label="Site"><%= site_access.site_id %></:col>
-  <:action :let={{_id, site_access}}>
-    <div class="sr-only">
-      <.link navigate={~p"/access/#{site_access}"}>Show</.link>
+<div>
+  <%= for record <- @by_user do %>
+    <div>
+      <label class="text-base text-gray-900 dark:text-gray-900"><%= record.user.email %></label>
+      <.link patch={~p"/access/#{record.user.id}/new"}>
+        <.button>Grant Site access</.button>
+      </.link>
+      <ol class="max-w-md space-y-1 text-gray-500 list-disc list-inside dark:text-gray-400">
+        <%= for site <- record.sites do %>
+          <li>
+            <%= site.name %>
+            <.link
+              phx-click={
+                JS.push("delete", value: %{user_id: record.user.id, site_id: site.site_id})
+              }
+              data-confirm="Are you sure?"
+            >
+              Delete
+            </.link>
+          </li>
+        <% end %>
+      </ol>
     </div>
-    <.link patch={~p"/access/#{site_access}/edit"}>Edit</.link>
-  </:action>
-  <:action :let={{id, site_access}}>
-    <.link
-      phx-click={JS.push("delete", value: %{id: site_access.id}) |> hide("##{id}")}
-      data-confirm="Are you sure?"
-    >
-      Delete
-    </.link>
-  </:action>
-</.table>
-
-<.modal :if={@live_action in [:new, :edit]} id="site_access-modal" show on_cancel={JS.patch(~p"/access")}>
+  <% end %>
+</div>
+<.modal
+  :if={@live_action in [:new, :edit]}
+  id="site_access-modal"
+  show
+  on_cancel={JS.patch(~p"/access")}
+>
   <.live_component
     module={InvValidatorWeb.SiteAccessLive.FormComponent}
     id={@site_access.id || :new}
     title={@page_title}
     action={@live_action}
     site_access={@site_access}
+    available_sites={@available_sites}
+    user_id={@user_id}
     patch={~p"/access"}
   />
 </.modal>
