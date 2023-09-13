@@ -18,7 +18,11 @@ defmodule InvValidator.UserSiteAccess do
 
   """
   def list_user_site_access do
-    Repo.all(SiteAccess)
+    Repo.all(from s in SiteAccess, preload: [:user, :site])
+  end
+
+  def get_site_access_by_user_id(user_id) do
+    Repo.all(from s in SiteAccess, where: s.user_id == ^user_id)
   end
 
   @doc """
@@ -36,6 +40,10 @@ defmodule InvValidator.UserSiteAccess do
 
   """
   def get_site_access!(id), do: Repo.get!(SiteAccess, id)
+
+  def get_site_access!(user_id, site_id) do
+    Repo.one!(from s in SiteAccess, where: s.user_id == ^user_id, where: s.site_id == ^site_id)
+  end
 
   @doc """
   Creates a site_access.

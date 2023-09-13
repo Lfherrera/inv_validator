@@ -47,7 +47,9 @@ defmodule InvValidatorWeb.SiteAccessLiveTest do
     test "updates site_access in listing", %{conn: conn, site_access: site_access} do
       {:ok, index_live, _html} = live(conn, ~p"/access")
 
-      assert index_live |> element("#user_site_access-#{site_access.id} a", "Edit") |> render_click() =~
+      assert index_live
+             |> element("#user_site_access-#{site_access.id} a", "Edit")
+             |> render_click() =~
                "Edit Site access"
 
       assert_patch(index_live, ~p"/access/#{site_access}/edit")
@@ -69,7 +71,10 @@ defmodule InvValidatorWeb.SiteAccessLiveTest do
     test "deletes site_access in listing", %{conn: conn, site_access: site_access} do
       {:ok, index_live, _html} = live(conn, ~p"/access")
 
-      assert index_live |> element("#user_site_access-#{site_access.id} a", "Delete") |> render_click()
+      assert index_live
+             |> element("#user_site_access-#{site_access.id} a", "Delete")
+             |> render_click()
+
       refute has_element?(index_live, "#user_site_access-#{site_access.id}")
     end
   end

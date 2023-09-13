@@ -5,7 +5,6 @@ defmodule InvValidator.UserSiteAccess.SiteAccess do
   alias InvValidator.Validator.Site
 
   schema "user_site_access" do
-
     belongs_to :user, User
     belongs_to :site, Site, references: :site_id
 

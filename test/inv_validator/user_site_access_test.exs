@@ -35,13 +35,18 @@ defmodule InvValidator.UserSiteAccessTest do
       site_access = site_access_fixture()
       update_attrs = %{site_id: 43}
 
-      assert {:ok, %SiteAccess{} = site_access} = UserSiteAccess.update_site_access(site_access, update_attrs)
+      assert {:ok, %SiteAccess{} = site_access} =
+               UserSiteAccess.update_site_access(site_access, update_attrs)
+
       assert site_access.site_id == 43
     end
 
     test "update_site_access/2 with invalid data returns error changeset" do
       site_access = site_access_fixture()
-      assert {:error, %Ecto.Changeset{}} = UserSiteAccess.update_site_access(site_access, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               UserSiteAccess.update_site_access(site_access, @invalid_attrs)
+
       assert site_access == UserSiteAccess.get_site_access!(site_access.id)
     end
 

@@ -7,7 +7,7 @@ defmodule InvValidatorWeb.InventoryLive.Index do
 
   @impl true
   def mount(_params, _session, socket) do
-    socket =  assign(socket,:all_sites, all_sites())
+    socket = assign(socket, :all_sites, all_sites())
     {:ok, stream(socket, :inventory_collection, Validator.list_inventory())}
   end
 
@@ -38,8 +38,8 @@ defmodule InvValidatorWeb.InventoryLive.Index do
   end
 
   defp all_sites do
-      Sites.list_sites()
-      |> Enum.map(fn site -> {site.name, site.site_id} end)
+    Sites.list_sites()
+    |> Enum.map(fn site -> {site.name, site.site_id} end)
   end
 
   @impl true

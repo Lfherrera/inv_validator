@@ -17,7 +17,12 @@
 
 <.back navigate={~p"/inventory"}>Back to inventory</.back>
 
-<.modal :if={@live_action == :edit} id="inventory-modal" show on_cancel={JS.patch(~p"/inventory/#{@inventory}")}>
+<.modal
+  :if={@live_action == :edit}
+  id="inventory-modal"
+  show
+  on_cancel={JS.patch(~p"/inventory/#{@inventory}")}
+>
   <.live_component
     module={InvValidatorWeb.InventoryLive.FormComponent}
     id={@inventory.id}
