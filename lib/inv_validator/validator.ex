@@ -41,6 +41,7 @@ defmodule InvValidator.Validator do
 
   """
   def get_inventory!(id), do: Repo.get!(from(i in Inventory, preload: :site), id)
+  def get_by!(by), do: Repo.all(Inventory, by) |> Repo.preload(:site) |> List.first()
 
   @doc """
   Creates a inventory.

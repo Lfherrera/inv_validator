@@ -9,22 +9,29 @@
 
 <.table
   id="inventory"
-  rows={@streams.inventory_collection}
-  row_click={fn {_id, inventory} -> JS.navigate(~p"/inventory/#{inventory}") end}
+  rows={@inventory_collection}
+  row_click={fn inventory -> JS.navigate(~p"/inventory/#{inventory}") end}
 >
-  <:col :let={{_id, inventory}} label="Date"><%= inventory.date %></:col>
-  <:col :let={{_id, inventory}} label="Segment"><%= inventory.segment_id %></:col>
-  <:col :let={{_id, inventory}} label="Site"><%= inventory.site.name %></:col>
-  <:col :let={{_id, inventory}} label="Room"><%= inventory.room_id %></:col>
-  <:action :let={{_id, inventory}}>
+  <:col :let={inventory} label="Date"><%= inventory.date %></:col>
+  <:col :let={inventory} label="Segment"><%= inventory.segment_id %></:col>
+  <:col :let={inventory} label="Site"><%= inventory.site.name %></:col>
+  <:col :let={inventory} label="Room"><%= inventory.room_id %></:col>
+  <:col :let={inventory} label="Occupied">
+    <%= if inventory.occupied do %>
+      <span class="text-rose-400"> Occupied </span>
+    <% else %>
+      <span class="text-lime-500"> Avialable </span>
+    <% end %>
+  </:col>
+  <:action :let={inventory}>
     <div class="sr-only">
       <.link navigate={~p"/inventory/#{inventory}"}>Show</.link>
     </div>
     <.link patch={~p"/inventory/#{inventory}/edit"}>Edit</.link>
   </:action>
-  <:action :let={{id, inventory}}>
+  <:action :let={ inventory}>
     <.link
-      phx-click={JS.push("delete", value: %{id: inventory.id}) |> hide("##{id}")}
+      phx-click={JS.push("delete", value: %{date: inventory.date, site_id: inventory.site_id, room_id: inventory.room_id}) |> hide("#{inventory.id}")}
       data-confirm="Are you sure?"
     >
       Delete

@@ -17,7 +17,8 @@ defmodule InvValidator.Application do
       # Start Finch
       {Finch, name: InvValidator.Finch},
       # Start the Endpoint (http/https)
-      InvValidatorWeb.Endpoint
+      InvValidatorWeb.Endpoint,
+      {InvValidator.TswInvChecker, name: :tsw_checker}
       # Start a worker by calling: InvValidator.Worker.start_link(arg)
       # {InvValidator.Worker, arg}
     ]
